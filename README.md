@@ -67,7 +67,3 @@ Test kapsamı:
 - Radar, Bomba ve Nükleer yeteneklerinin tüm senaryoları
 
 ---
-
-## 📜 Lisans
-
-MIT License © 2026 Sabahattin
