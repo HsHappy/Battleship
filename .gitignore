@@ -10,3 +10,7 @@ scratch/
 Thumbs.db
 .vscode/
 .idea/
+
+# Agent configurations
+.agents/
+
