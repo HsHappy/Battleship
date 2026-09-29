@@ -1,0 +1,20 @@
+{
+  "name": "amiral-batti",
+  "version": "1.0.0",
+  "description": "Taktiksel Amiral Battı Oyunu (Mana ve Özel Yetenekler)",
+  "type": "module",
+  "scripts": {
+    "start": "node server.js",
+    "test": "node --test tests/**/*.test.js"
+  },
+  "keywords": [
+    "battleship",
+    "amiral-batti",
+    "game"
+  ],
+  "author": "Sabahattin",
+  "license": "MIT",
+  "devDependencies": {
+    "playwright": "^1.63.0"
+  }
+}

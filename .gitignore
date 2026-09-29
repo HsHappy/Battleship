@@ -1,0 +1,12 @@
+# Dependencies
+node_modules/
+
+# Test & Debug artifacts
+scratch/
+*.log
+
+# OS & Editor files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

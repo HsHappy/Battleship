@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="theme-color" content="#070c14">
+  <title>Amiral Battı | Taktiksel Deniz Radarı</title>
+  <link rel="stylesheet" href="./src/ui/style.css">
+</head>
+<body>
+
+  <!-- TOP HEADER -->
+  <header class="app-header">
+    <div class="logo-area">
+      <span style="font-size: 1.3rem;">⚓</span>
+      <h1 class="logo-title">Amiral Battı</h1>
+    </div>
+    <div style="display: flex; align-items: center; gap: 10px;">
+      <div id="turn-pill" class="turn-pill">SIRA SENDE</div>
+      <button id="sound-btn" style="background: transparent; border: none; font-size: 1.1rem; cursor: pointer;">🔊</button>
+    </div>
+  </header>
+
+  <!-- MOBILE TAB SELECTOR (Hidden on Desktop) -->
+  <nav class="mobile-tabs" id="mobile-tabs">
+    <button class="tab-btn active" data-tab="radar">🎯 Düşman Radarı</button>
+    <button class="tab-btn" data-tab="fleet">🛡️ Filom</button>
+    <button class="tab-btn" data-tab="ships">📋 Gemi Listesi</button>
+  </nav>
+
+  <!-- MAIN GAME AREA -->
+  <main class="game-container">
+    <div id="game-banner" class="game-banner">Düşman sularına bir koordinat seçerek ateş et!</div>
+
+    <div class="battle-arena">
+      <!-- LEFT: OPPONENT BOARD / RADAR -->
+      <section id="panel-radar" class="board-panel">
+        <div class="board-header">
+          <span class="board-title">🎯 Düşman Suları (Radar)</span>
+          <span id="opponent-hits-counter" style="font-size: 0.75rem; color: var(--accent-cyan);">Kalan: 6 Gemi</span>
+        </div>
+        <div class="grid-wrapper">
+          <div class="col-labels">
+            <div>1</div><div>2</div><div>3</div><div>4</div><div>5</div><div>6</div><div>7</div><div>8</div><div>9</div><div>10</div>
+          </div>
+          <div class="row-labels">
+            <div>A</div><div>B</div><div>C</div><div>D</div><div>E</div><div>F</div><div>G</div><div>H</div><div>I</div><div>J</div>
+          </div>
+          <div id="opponent-grid" class="grid-board"></div>
+          <div id="radar-locked-overlay" class="radar-locked-overlay">
+            <span class="lock-icon">🔒</span>
+            <span class="lock-title">SİS PERDESİ</span>
+            <span class="lock-subtitle">Donanmanı konuşlandırıp savaşı başlat</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- CENTER: SHIP LIST STATUS & SETUP DOCK -->
+      <section id="panel-ships" class="ship-list-panel">
+        <!-- SETUP PHASE CONTROLS -->
+        <div id="setup-controls" class="setup-controls">
+          <div class="setup-header">
+            <span>⚓ TERSANE</span>
+            <span id="setup-placed-count" class="placed-badge">0 / 6</span>
+          </div>
+
+          <div id="dock-ship-list" class="dock-ship-list"></div>
+
+          <div class="setup-actions">
+            <button id="btn-rotate" class="btn-setup" type="button" title="Yönü Değiştir (R)">
+              <span class="btn-icon">🔄</span> <span id="rotate-label">Yatay</span> <kbd>R</kbd>
+            </button>
+            <div class="setup-quick-btns">
+              <button id="btn-random-fleet" class="btn-setup btn-secondary" type="button" title="Rastgele Yerleştir">
+                🎲 Rastgele
+              </button>
+              <button id="btn-clear-fleet" class="btn-setup btn-secondary" type="button" title="Tümünü Kaldır">
+                🗑️ Temizle
+              </button>
+            </div>
+            <button id="btn-start-battle" class="btn-setup btn-start-battle" type="button" disabled>
+              ⚔️ SAVAŞA BAŞLA
+            </button>
+          </div>
+        </div>
+
+        <!-- BATTLE PHASE SHIP STATUS -->
+        <div id="battle-ship-list" class="battle-ship-list" style="display: none;">
+          <div class="ship-list-header">
+            <span>Düşman Filosu</span>
+            <span id="ships-alive-count" style="color: var(--accent-cyan);">6/6</span>
+          </div>
+          <div id="ship-list-container" class="fleet-chips"></div>
+        </div>
+      </section>
+
+      <!-- RIGHT: PLAYER FLEET BOARD -->
+      <section id="panel-fleet" class="board-panel">
+        <div class="board-header">
+          <span class="board-title">🛡️ Filomuz (Savunma)</span>
+          <span id="player-hits-counter" style="font-size: 0.75rem; color: var(--accent-cyan);">Kalan: 6 Gemi</span>
+        </div>
+        <div class="grid-wrapper">
+          <div class="col-labels">
+            <div>1</div><div>2</div><div>3</div><div>4</div><div>5</div><div>6</div><div>7</div><div>8</div><div>9</div><div>10</div>
+          </div>
+          <div class="row-labels">
+            <div>A</div><div>B</div><div>C</div><div>D</div><div>E</div><div>F</div><div>G</div><div>H</div><div>I</div><div>J</div>
+          </div>
+          <div id="player-grid" class="grid-board"></div>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <!-- BOTTOM HUD: MANA & ABILITY BAR (MATCHING HAND-DRAWN SKETCH) -->
+  <footer class="hud-bar">
+    <!-- MANA SYSTEM -->
+    <div class="mana-container">
+      <div class="mana-meta">
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <span>MANA GÜCÜ</span>
+          <button id="btn-mana-charge" class="btn-mana-charge" type="button" title="Test için +2 Mana Şarj Et">⚡ +2 Mana</button>
+        </div>
+        <span id="mana-count-text">6 / 10 (+2/Tur)</span>
+      </div>
+      <div class="mana-slots" id="mana-slots">
+        <div class="mana-slot"></div>
+        <div class="mana-slot"></div>
+        <div class="mana-slot"></div>
+        <div class="mana-slot"></div>
+        <div class="mana-slot"></div>
+        <div class="mana-slot"></div>
+        <div class="mana-slot"></div>
+        <div class="mana-slot"></div>
+        <div class="mana-slot"></div>
+        <div class="mana-slot"></div>
+      </div>
+    </div>
+
+    <!-- ABILITY BUTTONS (FROM SKETCH) -->
+    <div class="abilities-container">
+      <!-- BOMBA (Cost 4, 3x3) -->
+      <button class="ability-card" id="btn-ability-bomb" data-ability="bomb" title="Bomba (Kısayol: 1)">
+        <div class="ability-cost-badge">
+          <span class="cost-gem">💧</span>
+          <span class="cost-num">4</span>
+          <span class="cost-label">MANA</span>
+        </div>
+        <div class="ability-circle">
+          <span class="icon">💣</span>
+          <span class="ability-kbd">1</span>
+        </div>
+        <span class="ability-label">Bomba</span>
+        <span class="ability-area-label">3×3 Alan</span>
+      </button>
+
+      <!-- RADAR (Cost 2, 3x3) -->
+      <button class="ability-card" id="btn-ability-radar" data-ability="radar" title="Radar (Kısayol: 2)">
+        <div class="ability-cost-badge">
+          <span class="cost-gem">💧</span>
+          <span class="cost-num">2</span>
+          <span class="cost-label">MANA</span>
+        </div>
+        <div class="ability-circle">
+          <span class="icon">📡</span>
+          <span class="ability-kbd">2</span>
+        </div>
+        <span class="ability-label">Radar</span>
+        <span class="ability-area-label">3×3 Tara</span>
+      </button>
+
+      <!-- NUKLEER (Cost 6, Sinks whole ship) -->
+      <button class="ability-card" id="btn-ability-nuke" data-ability="nuke" title="Nükleer (Kısayol: 3)">
+        <div class="ability-cost-badge">
+          <span class="cost-gem">💧</span>
+          <span class="cost-num">6</span>
+          <span class="cost-label">MANA</span>
+        </div>
+        <div class="ability-circle">
+          <span class="icon">☢️</span>
+          <span class="ability-kbd">3</span>
+        </div>
+        <span class="ability-label">Nükleer</span>
+        <span class="ability-area-label">Tekte Batır</span>
+      </button>
+    </div>
+  </footer>
+
+  <!-- GAME OVER MODAL -->
+  <div id="game-over-modal" class="modal-overlay" style="display: none;">
+    <div class="modal-card">
+      <h2 id="modal-title" style="font-size: 1.8rem; margin-bottom: 12px; color: var(--accent-cyan);">ZAFER!</h2>
+      <p id="modal-desc" style="color: var(--text-muted); line-height: 1.5;">Düşman donanmasını başarıyla batırdınız.</p>
+      <button id="btn-restart" class="btn-primary">Tekrar Oyna</button>
+    </div>
+  </div>
+
+  <script type="module" src="./src/ui/App.js"></script>
+</body>
+</html>
