@@ -144,3 +144,14 @@ test('Abilities Flow: Nükleer rejects targeting already attacked cell', () => {
   assert.match(res.error, /daha önce atış yapıldı/);
   assert.equal(engine.mana.player, 10); // Mana preserved
 });
+
+test('Abilities Flow: Player with 4 mana throws bomb -> player mana becomes 0, isolated from opponent mana', () => {
+  const engine = new GameEngine({ startingMana: 4 });
+  engine.mana.opponent = 10; // opponent has 10 mana
+  const res = engine.useAbility(ABILITIES.BOMB.id, 2, 2); // bomb costs 4
+  assert.equal(res.valid, true);
+  assert.equal(engine.mana.player, 0); // player mana is 0
+  assert.equal(engine.mana.opponent, 10); // opponent mana remains 10
+  assert.equal(engine.currentTurn, 'opponent');
+});
+

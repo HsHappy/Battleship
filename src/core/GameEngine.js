@@ -1,21 +1,43 @@
-import { BOARD_SIZE, ABILITIES, GAME_RULES, DEFAULT_FLEET, GAME_PHASE } from './Constants.js';
+import { BOARD_SIZE, ABILITIES, GAME_RULES, DEFAULT_FLEET, GAME_PHASE, GAME_MODE, THEME_SELECTION, MAP_THEMES } from './Constants.js';
 import { Board } from './Board.js';
+import { TerrainGenerator } from './TerrainGenerator.js';
 
 export class GameEngine {
   constructor({
+    boardSize = BOARD_SIZE,
+    themeId = null,
     fleetTemplates = DEFAULT_FLEET,
     startingMana = GAME_RULES.STARTING_MANA,
     maxMana = GAME_RULES.MAX_MANA,
     manaPerRound = GAME_RULES.MANA_PER_ROUND,
-    phase = GAME_PHASE.BATTLE
+    phase = GAME_PHASE.BATTLE,
+    mode = GAME_MODE.VS_BOT
   } = {}) {
+    this.boardSize = boardSize;
+    this.mode = mode;
     this.fleetTemplates = fleetTemplates;
     this.maxMana = maxMana;
     this.manaPerRound = manaPerRound;
     this.phase = phase;
 
-    this.playerBoard = new Board(BOARD_SIZE);
-    this.opponentBoard = new Board(BOARD_SIZE);
+    this.playerBoard = new Board(this.boardSize);
+    this.opponentBoard = new Board(this.boardSize);
+
+    // If themeId is specified, generate terrain and apply to both boards for fair competition
+    if (themeId) {
+      const terrain = TerrainGenerator.generateTerrain({
+        boardSize: this.boardSize,
+        themeId,
+        fleetTemplates: this.fleetTemplates
+      });
+      this.theme = terrain.theme;
+      this.obstacles = terrain.obstacles;
+      this.playerBoard.setObstacles(terrain.obstacles);
+      this.opponentBoard.setObstacles(terrain.obstacles);
+    } else {
+      this.theme = MAP_THEMES.OCEAN;
+      this.obstacles = [];
+    }
 
     this.currentTurn = 'player'; // 'player' | 'opponent'
     this.turnHistory = [];
@@ -33,33 +55,47 @@ export class GameEngine {
     this.isOver = false;
   }
 
-  setupBoards({ autoPlacePlayer = false } = {}) {
+  setupBoards({ autoPlacePlayer = false, autoPlaceOpponent = (this.mode !== GAME_MODE.LOCAL_PVP) } = {}) {
     if (autoPlacePlayer) {
       this.playerBoard.randomizeFleet(this.fleetTemplates);
       this.phase = GAME_PHASE.BATTLE;
     } else {
       this.phase = GAME_PHASE.SETUP;
     }
-    this.opponentBoard.randomizeFleet(this.fleetTemplates);
+    if (autoPlaceOpponent) {
+      this.opponentBoard.randomizeFleet(this.fleetTemplates);
+    }
   }
 
   /**
-   * Starts the battle phase once player has placed all fleet ships.
+   * Starts the battle phase once players have placed all fleet ships.
    */
   startBattle({ bypassValidation = false } = {}) {
-    if (!bypassValidation && this.playerBoard.ships.length !== this.fleetTemplates.length) {
-      return {
-        valid: false,
-        error: `Tüm gemileri yerleştirmelisiniz (${this.playerBoard.ships.length}/${this.fleetTemplates.length})`
-      };
+    if (!bypassValidation) {
+      if (this.playerBoard.ships.length !== this.fleetTemplates.length) {
+        return {
+          valid: false,
+          error: `1. Oyuncu tüm gemileri yerleştirmelidir (${this.playerBoard.ships.length}/${this.fleetTemplates.length})`
+        };
+      }
+      if (this.mode === GAME_MODE.LOCAL_PVP && this.opponentBoard.ships.length !== this.fleetTemplates.length) {
+        return {
+          valid: false,
+          error: `2. Oyuncu tüm gemileri yerleştirmelidir (${this.opponentBoard.ships.length}/${this.fleetTemplates.length})`
+        };
+      }
     }
 
-    if (this.opponentBoard.ships.length === 0) {
+    if (this.opponentBoard.ships.length === 0 && this.mode !== GAME_MODE.LOCAL_PVP) {
       this.opponentBoard.randomizeFleet(this.fleetTemplates);
     }
 
     this.phase = GAME_PHASE.BATTLE;
     return { valid: true };
+  }
+
+  getCurrentPlayerBoard() {
+    return this.currentTurn === 'player' ? this.playerBoard : this.opponentBoard;
   }
 
   getCurrentTargetBoard() {

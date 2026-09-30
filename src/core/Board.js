@@ -7,6 +7,27 @@ export class Board {
     this.ships = [];
     this.shots = new Map(); // "r,c" => CELL_STATUS
     this.radarScans = new Map(); // "r,c" => CELL_STATUS
+    this.obstacles = new Set(); // "r,c" => obstacle cell
+  }
+
+  setObstacles(coords) {
+    this.obstacles.clear();
+    if (!coords) return;
+    if (coords instanceof Set) {
+      this.obstacles = new Set(coords);
+      return;
+    }
+    for (const c of coords) {
+      if (typeof c === 'string') {
+        this.obstacles.add(c);
+      } else if (c && typeof c.r === 'number' && typeof c.c === 'number') {
+        this.obstacles.add(`${c.r},${c.c}`);
+      }
+    }
+  }
+
+  isObstacle(r, c) {
+    return this.obstacles.has(`${r},${c}`);
   }
 
   isWithinBounds(r, c) {
@@ -18,11 +39,14 @@ export class Board {
   }
 
   /**
-   * Rule 00: Check if placement is valid (in-bounds and no overlap).
+   * Rule 00: Check if placement is valid (in-bounds, not on obstacle, and no overlap).
    */
   isValidPlacement(coordinates, ignoreShipId = null) {
     for (const { r, c } of coordinates) {
       if (!this.isWithinBounds(r, c)) {
+        return false;
+      }
+      if (this.isObstacle(r, c)) {
         return false;
       }
       // Check overlap with existing placed ships (ignoring itself if moving)
@@ -67,6 +91,10 @@ export class Board {
       return { valid: false, error: 'Out of bounds' };
     }
 
+    if (this.isObstacle(r, c)) {
+      return { valid: false, error: 'Kayalık veya ada bölgesine atış yapılamaz!' };
+    }
+
     const key = `${r},${c}`;
     if (this.shots.has(key)) {
       return { valid: false, error: 'Already attacked this coordinate' };
@@ -108,6 +136,7 @@ export class Board {
         const r = centerR + dr;
         const c = centerC + dc;
         if (!this.isWithinBounds(r, c)) continue;
+        if (this.isObstacle(r, c)) continue; // Natural barrier absorbs blast
 
         const key = `${r},${c}`;
         const currentShot = this.shots.get(key);
@@ -195,6 +224,10 @@ export class Board {
   receiveNuke(r, c) {
     if (!this.isWithinBounds(r, c)) {
       return { valid: false, error: 'Out of bounds' };
+    }
+
+    if (this.isObstacle(r, c)) {
+      return { valid: false, error: 'Kayalık veya ada bölgesine nükleer atılamaz!' };
     }
 
     const key = `${r},${c}`;

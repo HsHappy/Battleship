@@ -1,11 +1,25 @@
 import http from 'node:http';
 import fs from 'node:fs';
 import path from 'node:path';
+import os from 'node:os';
 import { fileURLToPath } from 'node:url';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const PORT = process.env.PORT || 3000;
+
+function getLocalIpAddresses() {
+  const interfaces = os.networkInterfaces();
+  const addresses = [];
+  for (const name of Object.keys(interfaces)) {
+    for (const iface of interfaces[name] || []) {
+      if (iface.family === 'IPv4' && !iface.internal) {
+        addresses.push(iface.address);
+      }
+    }
+  }
+  return addresses;
+}
 
 const MIME_TYPES = {
   '.html': 'text/html; charset=utf-8',
@@ -43,6 +57,20 @@ const server = http.createServer((req, res) => {
   });
 });
 
-server.listen(PORT, () => {
-  console.log(`⚓ Amiral Battı oyunu yerel sunucuda yayında: http://localhost:${PORT}`);
+server.listen(PORT, '0.0.0.0', () => {
+  const localIps = getLocalIpAddresses();
+  console.log(`\n==================================================`);
+  console.log(`⚓ AMİRAL BATTI - YEREL AĞ SUNUCUSU AKTİF`);
+  console.log(`==================================================`);
+  console.log(`💻 Bilgisayarda Oyna:           http://localhost:${PORT}`);
+  if (localIps.length > 0) {
+    localIps.forEach(ip => {
+      console.log(`📱 Telefondan / Arkadaşlarla:  http://${ip}:${PORT}`);
+    });
+  } else {
+    console.log(`📱 Telefondan Oyna:           (Yerel Wi-Fi IP adresi bulunamadı)`);
+  }
+  console.log(`==================================================`);
+  console.log(`💡 İpucu: Telefonunuzun ve bilgisayarınızın aynı Wi-Fi`);
+  console.log(`   ağına bağlı olduğundan emin olun.\n`);
 });

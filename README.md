@@ -6,6 +6,28 @@ Modern web teknolojileriyle geliştirilmiş, stratejik **Mana Sistemi** ve **Öz
 
 ## 🌟 Öne Çıkan Özellikler
 
+- **🎮 İki Farklı Oyun Modu**:
+  - **🤖 Bota Karşı (Tek Oyunculu)**: Taktiksel yapay zekaya karşı tek başınıza mücadele edin.
+  - **👥 Aynı Cihazda Sırayla (2 Oyuncu / Hotseat Pass & Play)**: Arkadaşınızla tek bir ekranda (bilgisayar veya tablet/telefon) yan yana sırayla oynayın.
+  - **🔒 Akıllı Gizlilik Perdesi**: 2 oyunculu modda sıra veya hazırlık devirlerinde ekran otomatik olarak kararır, böylece rakibiniz gemi yerleşiminizi ve gizli taktiklerinizi göremez.
+
+- **🗺️ Değiştirilebilir Harita Boyutu (Map Scaling)**:
+  - **8×8 Hızlı**: Kompakt ve seri çatışmalar için hızlı harita boyutu.
+  - **10×10 Standart**: Klasik amiral battı taktiksel oyun tahtası.
+  - **12×12 Epik**: Geniş deniz sahası, derin strateji ve uzun soluklu mücadele.
+  - Oyun mod modalından veya tersane panelindeki hap butonlardan tek tıkla dinamik değişim.
+  - Koordinat harfleri/rakamları ve CSS ızgara sistemi seçilen boyuta anında uyum sağlar.
+
+- **🏝️ Harita Temaları & Doğal Engeller (Kara, Buzul, Resifler)**:
+  - **🌊 Açık Okyanus**: Engelsiz açık sular, saf klasik taktik savaşı.
+  - **🧊 Kutup & Buzullar**: Geçit vermeyen yüzen buz kütleleri ve buz dağları.
+  - **🏝️ Takımada**: Tropik kara parçaları, adacıklar ve korunaklı koylar.
+  - **🪨 Fırtınalı Kayalıklar**: Sarp kayalıklar, sığ resifler ve dar boğazlar.
+  - **🤖 Önemli Maçlarda Zorunlu Rastgelelik**: Bota karşı rekabetçi maçlarda tema zorunlu rastgele belirlenir; arkadaşlara karşı özel maçlarda tema dilediğiniz gibi seçilebilir.
+  - **⚖️ Kusursuz Simetri & Şeffaflık**: Engeller her iki oyuncunun hem radar hem savunma ızgarasında her zaman görünür.
+  - **🛡️ Haksız Ceza Yok**: Doğal engellere tıklamak atış sırasını veya manayı tüketmez; oyuncuyu uyarıp hakkını korur.
+  - **⚓ Çözülebilirlik Garantisi**: Engel üretim algoritması tüm filonun sorunsuz yerleşebileceğini matematiksel olarak garanti eder.
+
 - **🛠️ İnteraktif Donanma Konuşlandırma (Tersane)**:
   - Gemileri tek tek seçerek tahtaya yerleştirme veya konumlarını değiştirme.
   - Yatay ve dikey yerleştirme için tek tık ve klavye kısayolu (**`R`** tuşu).
@@ -26,6 +48,15 @@ Modern web teknolojileriyle geliştirilmiş, stratejik **Mana Sistemi** ve **Öz
   - `Escape` veya `Sağ Tık`: Yetenek İptali
   - `R`: Gemi Döndürme (Hazırlık aşamasında)
 
+- **🛡️ Oyun İçi Mod Koruması & Çıkış Sistemi**:
+  - Devam eden bir savaş sırasında yanlışlıkla mod değiştirilmesini engelleyen akıllı onay penceresi (`⚠️ Savaş Devam Ediyor`).
+  - İstendiğinde savaşı sıfırlayıp güvenle çıkmak için başlıktaki özel **`🏳️ Çıkış / Sıfırla`** butonu.
+
+- **📱 Mobil ve Yerel Ağ (Wi-Fi) Uyumluluğu**:
+  - Sunucu başlatıldığında bilgisayarın yerel ağ IP adresini otomatik algılar (Örn: `http://192.168.1.XX:3000`).
+  - Aynı Wi-Fi'a bağlı telefon ve tabletlerden hiçbir ek ayar gerekmeden oyuna anında bağlanıp arkadaşlarla canlı oynanabilir.
+  - Mobil cihazlarda dokunmatik dostu yerleşim, parmak erişimi için optimize edilmiş hızlı hazırlık çubuğu (`🔄 Döndür`, `🎲 Rastgele`, `⚔️ Savaş`) ve otomatik sekme geçişleri (`100dvh`).
+
 - **🖥️ Responsive & Modern Arayüz**:
   - Kaydırma (scroll) gerektirmeyen, ekrana tam oturan viewport yerleşimi.
   - Web Audio API ile tamamen prosedürel ses efektleri (tıklama, top atışı, isabet, ıska, radar sinyali, nükleer patlama).
@@ -45,10 +76,9 @@ npm install
 npm start
 ```
 
-Tarayıcınızda açın:
-```
-http://localhost:3000
-```
+Terminalde beliren bağlantıları kullanarak oyuna erişin:
+- **💻 Bilgisayarda Oynamak İçin**: `http://localhost:3000`
+- **📱 Telefondan / Arkadaşlarla Oynamak İçin**: `http://<LAN_IP>:3000` (Aynı Wi-Fi ağına bağlı olunmalıdır)
 
 ---
 
@@ -65,5 +95,6 @@ Test kapsamı:
 - İsabet, ıska ve sıra takip kuralları
 - Mana yenilenmesi ve yetenek tüketimleri
 - Radar, Bomba ve Nükleer yeteneklerinin tüm senaryoları
+- 2 Oyunculu (Hotseat / Local PvP) hazırlık, sıra devri ve zafer akışları
 
 ---

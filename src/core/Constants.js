@@ -1,18 +1,75 @@
 export const BOARD_SIZE = 10;
 
+export const BOARD_SIZES = {
+  SMALL: { size: 8, label: '8×8 Hızlı', description: 'Kompakt çatışma' },
+  STANDARD: { size: 10, label: '10×10 Standart', description: 'Klasik filo taktiği' },
+  LARGE: { size: 12, label: '12×12 Epik', description: 'Geniş deniz savaşı' }
+};
+
+export const SUPPORTED_BOARD_SIZES = [8, 10, 12];
+
 export const CELL_STATUS = {
   EMPTY: 'empty',
   MISS: 'miss',
   HIT: 'hit',
   SUNK: 'sunk',
   RADAR_DETECTED: 'radar_detected',
-  RADAR_EMPTY: 'radar_empty'
+  RADAR_EMPTY: 'radar_empty',
+  OBSTACLE: 'obstacle'
+};
+
+export const MAP_THEMES = {
+  OCEAN: {
+    id: 'ocean',
+    name: 'Açık Okyanus',
+    icon: '🌊',
+    densityRange: [0.0, 0.0],
+    obstacleName: 'Sığlık',
+    obstacleIcon: '🌊',
+    desc: 'Geniş açık sular, engelsiz klasik deniz savaşı.'
+  },
+  ARCTIC: {
+    id: 'arctic',
+    name: 'Kutup & Buzullar',
+    icon: '🧊',
+    densityRange: [0.06, 0.08],
+    obstacleName: 'Buz Dağı',
+    obstacleIcon: '🧊',
+    desc: 'Dondurucu sular ve geçit vermeyen devasa buz kütleleri.'
+  },
+  ARCHIPELAGO: {
+    id: 'archipelago',
+    name: 'Takımada',
+    icon: '🏝️',
+    densityRange: [0.10, 0.12],
+    obstacleName: 'Ada Parçası',
+    obstacleIcon: '🏝️',
+    desc: 'Tropik adacıklar, korunaklı koylar ve gizli sığınaklar.'
+  },
+  REEF: {
+    id: 'reef',
+    name: 'Fırtınalı Kayalıklar',
+    icon: '🪨',
+    densityRange: [0.14, 0.16],
+    obstacleName: 'Sarp Kaya',
+    obstacleIcon: '🪨',
+    desc: 'Volkanik resifler, batık kayalıklar ve dar geçitler.'
+  }
+};
+
+export const THEME_SELECTION = {
+  RANDOM: 'random'
 };
 
 export const GAME_PHASE = {
   SETUP: 'setup',
   BATTLE: 'battle',
   GAME_OVER: 'game_over'
+};
+
+export const GAME_MODE = {
+  VS_BOT: 'vs_bot',
+  LOCAL_PVP: 'local_pvp'
 };
 
 export const ABILITIES = {

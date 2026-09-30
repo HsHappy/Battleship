@@ -17,9 +17,15 @@
       <span style="font-size: 1.3rem;">⚓</span>
       <h1 class="logo-title">Amiral Battı</h1>
     </div>
-    <div style="display: flex; align-items: center; gap: 10px;">
+    <div class="header-actions">
+      <button id="btn-mode-select" class="btn-mode-pill" type="button" title="Oyun Modunu ve Harita Boyutunu Değiştir">
+        <span id="mode-icon">🤖</span> <span id="mode-text">Bota Karşı</span> <span id="board-size-badge" class="mode-size-badge">10×10</span> ▾
+      </button>
       <div id="turn-pill" class="turn-pill">SIRA SENDE</div>
-      <button id="sound-btn" style="background: transparent; border: none; font-size: 1.1rem; cursor: pointer;">🔊</button>
+      <button id="btn-quit-game" class="btn-quit-pill" type="button" title="Oyundan Çık / Sıfırla">
+        <span>🏳️</span> <span class="quit-label">Çıkış</span>
+      </button>
+      <button id="sound-btn" class="sound-toggle-btn" type="button" title="Sesi Aç/Kapat">🔊</button>
     </div>
   </header>
 
@@ -38,14 +44,14 @@
       <!-- LEFT: OPPONENT BOARD / RADAR -->
       <section id="panel-radar" class="board-panel">
         <div class="board-header">
-          <span class="board-title">🎯 Düşman Suları (Radar)</span>
+          <span id="radar-board-title" class="board-title">🎯 Düşman Suları (Radar)</span>
           <span id="opponent-hits-counter" style="font-size: 0.75rem; color: var(--accent-cyan);">Kalan: 6 Gemi</span>
         </div>
         <div class="grid-wrapper">
-          <div class="col-labels">
+          <div class="col-labels" id="radar-col-labels">
             <div>1</div><div>2</div><div>3</div><div>4</div><div>5</div><div>6</div><div>7</div><div>8</div><div>9</div><div>10</div>
           </div>
-          <div class="row-labels">
+          <div class="row-labels" id="radar-row-labels">
             <div>A</div><div>B</div><div>C</div><div>D</div><div>E</div><div>F</div><div>G</div><div>H</div><div>I</div><div>J</div>
           </div>
           <div id="opponent-grid" class="grid-board"></div>
@@ -62,8 +68,20 @@
         <!-- SETUP PHASE CONTROLS -->
         <div id="setup-controls" class="setup-controls">
           <div class="setup-header">
-            <span>⚓ TERSANE</span>
+            <span id="setup-player-title">⚓ TERSANE</span>
             <span id="setup-placed-count" class="placed-badge">0 / 6</span>
+          </div>
+
+          <div class="setup-size-bar">
+            <div style="display: flex; align-items: center; gap: 6px;">
+              <span class="setup-size-label">Harita:</span>
+              <div class="size-pill-group" id="setup-size-pills">
+                <button type="button" class="btn-size-pill" data-size="8">8×8</button>
+                <button type="button" class="btn-size-pill active" data-size="10">10×10</button>
+                <button type="button" class="btn-size-pill" data-size="12">12×12</button>
+              </div>
+            </div>
+            <span id="theme-badge" class="theme-badge" title="Harita Teması">🌊 Okyanus</span>
           </div>
 
           <div id="dock-ship-list" class="dock-ship-list"></div>
@@ -89,7 +107,7 @@
         <!-- BATTLE PHASE SHIP STATUS -->
         <div id="battle-ship-list" class="battle-ship-list" style="display: none;">
           <div class="ship-list-header">
-            <span>Düşman Filosu</span>
+            <span id="battle-ship-list-title">Düşman Filosu</span>
             <span id="ships-alive-count" style="color: var(--accent-cyan);">6/6</span>
           </div>
           <div id="ship-list-container" class="fleet-chips"></div>
@@ -99,17 +117,39 @@
       <!-- RIGHT: PLAYER FLEET BOARD -->
       <section id="panel-fleet" class="board-panel">
         <div class="board-header">
-          <span class="board-title">🛡️ Filomuz (Savunma)</span>
+          <span id="fleet-board-title" class="board-title">🛡️ Filomuz (Savunma)</span>
           <span id="player-hits-counter" style="font-size: 0.75rem; color: var(--accent-cyan);">Kalan: 6 Gemi</span>
         </div>
         <div class="grid-wrapper">
-          <div class="col-labels">
+          <div class="col-labels" id="fleet-col-labels">
             <div>1</div><div>2</div><div>3</div><div>4</div><div>5</div><div>6</div><div>7</div><div>8</div><div>9</div><div>10</div>
           </div>
-          <div class="row-labels">
+          <div class="row-labels" id="fleet-row-labels">
             <div>A</div><div>B</div><div>C</div><div>D</div><div>E</div><div>F</div><div>G</div><div>H</div><div>I</div><div>J</div>
           </div>
           <div id="player-grid" class="grid-board"></div>
+        </div>
+
+        <!-- MOBILE / QUICK FLEET SETUP BAR -->
+        <div id="fleet-setup-quickbar" class="fleet-setup-quickbar">
+          <div class="quick-setup-info">
+            <span id="quick-ship-indicator" class="quick-ship-indicator">🚢 Seçili: Uçak Gemisi (5)</span>
+            <span id="quick-placed-indicator" class="placed-badge">0 / 6</span>
+          </div>
+          <div class="quick-actions-row">
+            <button id="btn-quick-rotate" class="btn-setup" type="button" title="Yönü Değiştir (R)">
+              🔄 <span id="quick-rotate-label">Yatay</span>
+            </button>
+            <button id="btn-quick-random" class="btn-setup btn-secondary" type="button" title="Rastgele Yerleştir">
+              🎲 Rastgele
+            </button>
+            <button id="btn-quick-clear" class="btn-setup btn-secondary" type="button" title="Tümünü Temizle">
+              🗑️
+            </button>
+            <button id="btn-quick-start" class="btn-setup btn-start-battle" type="button" disabled>
+              ⚔️ SAVAŞ
+            </button>
+          </div>
         </div>
       </section>
     </div>
@@ -189,12 +229,139 @@
     </div>
   </footer>
 
+  <!-- GAME MODE SELECTOR MODAL -->
+  <div id="mode-modal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="mode-modal-title" style="display: none;">
+    <div class="modal-card mode-select-card">
+      <div style="font-size: 1.8rem; margin-bottom: 6px;">⚙️</div>
+      <h2 id="mode-modal-title" style="font-size: 1.4rem; margin-bottom: 6px; color: var(--accent-cyan);">OYUN AYARLARI</h2>
+      <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 16px;">Oyun modunu ve harita boyutunu belirleyin:</p>
+      
+      <div class="modal-section-title">🎮 OYUN MODU</div>
+      <div class="mode-options">
+        <button id="btn-choose-bot" class="mode-option-btn active" type="button">
+          <div class="mode-opt-icon">🤖</div>
+          <div class="mode-opt-info">
+            <span class="mode-opt-title">Bota Karşı (Tek Oyunculu)</span>
+            <span class="mode-opt-desc">Taktiksel yapay zekaya karşı tek başına mücadele et.</span>
+          </div>
+        </button>
+
+        <button id="btn-choose-hotseat" class="mode-option-btn" type="button">
+          <div class="mode-opt-icon">👥</div>
+          <div class="mode-opt-info">
+            <span class="mode-opt-title">Aynı Cihazda (2 Oyuncu / Sırayla)</span>
+            <span class="mode-opt-desc">Arkadaşınla yan yana tek ekranda sırayla oyna. Gizlilik perdesi gemilerini korur!</span>
+          </div>
+        </button>
+      </div>
+
+      <div class="modal-section-title">🗺️ HARİTA BOYUTU</div>
+      <div class="size-options-grid" id="modal-size-options">
+        <button id="btn-modal-size-8" class="size-option-btn" type="button" data-size="8">
+          <span class="size-opt-title">8×8 Hızlı</span>
+          <span class="size-opt-desc">Kompakt & seri çatışma</span>
+        </button>
+        <button id="btn-modal-size-10" class="size-option-btn active" type="button" data-size="10">
+          <span class="size-opt-title">10×10 Standart</span>
+          <span class="size-opt-desc">Klasik amiral battı boyutu</span>
+        </button>
+        <button id="btn-modal-size-12" class="size-option-btn" type="button" data-size="12">
+          <span class="size-opt-title">12×12 Epik</span>
+          <span class="size-opt-desc">Geniş deniz alanı</span>
+        </button>
+      </div>
+
+      <div class="modal-section-title">🏝️ HARİTA TEMASI & ENGELLER</div>
+      <p id="theme-modal-note" class="theme-note">Özel maçlarda temayı özgürce seçebilirsiniz:</p>
+      <div class="theme-options-grid" id="modal-theme-options">
+        <button id="btn-theme-random" class="theme-option-btn active" type="button" data-theme="random">
+          <div class="theme-opt-icon">🎲</div>
+          <div class="theme-opt-info">
+            <span class="theme-opt-title">Rastgele</span>
+            <span class="theme-opt-desc">Her maçta rastgele coğrafya</span>
+          </div>
+        </button>
+
+        <button id="btn-theme-ocean" class="theme-option-btn" type="button" data-theme="ocean">
+          <div class="theme-opt-icon">🌊</div>
+          <div class="theme-opt-info">
+            <span class="theme-opt-title">Açık Okyanus</span>
+            <span class="theme-opt-desc">%0-%2 engel, ferah deniz</span>
+          </div>
+        </button>
+
+        <button id="btn-theme-arctic" class="theme-option-btn" type="button" data-theme="arctic">
+          <div class="theme-opt-icon">🧊</div>
+          <div class="theme-opt-info">
+            <span class="theme-opt-title">Kutup & Buzul</span>
+            <span class="theme-opt-desc">%6-%8 devasa buz kütleleri</span>
+          </div>
+        </button>
+
+        <button id="btn-theme-archipelago" class="theme-option-btn" type="button" data-theme="archipelago">
+          <div class="theme-opt-icon">🏝️</div>
+          <div class="theme-opt-info">
+            <span class="theme-opt-title">Takımada</span>
+            <span class="theme-opt-desc">%10-%12 tropik adacıklar</span>
+          </div>
+        </button>
+
+        <button id="btn-theme-reef" class="theme-option-btn" type="button" data-theme="reef">
+          <div class="theme-opt-icon">🪨</div>
+          <div class="theme-opt-info">
+            <span class="theme-opt-title">Kayalıklar</span>
+            <span class="theme-opt-desc">%14-%16 volkanik resifler</span>
+          </div>
+        </button>
+      </div>
+
+      <div style="display: flex; gap: 10px; margin-top: 18px; justify-content: flex-end;">
+        <button id="btn-close-mode-modal" class="btn-setup btn-secondary" type="button">Kapat</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- CONFIRM ACTION (QUIT / CHANGE MODE) MODAL -->
+  <div id="confirm-modal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="confirm-modal-title" style="display: none;">
+    <div class="modal-card confirm-modal-card">
+      <div style="font-size: 2.2rem; margin-bottom: 6px;">⚠️</div>
+      <h2 id="confirm-modal-title" style="font-size: 1.35rem; margin-bottom: 8px; color: #ffaa00;">SAVAŞ DEVAM EDİYOR</h2>
+      <p id="confirm-modal-desc" style="color: var(--text-muted); font-size: 0.9rem; line-height: 1.5; margin-bottom: 20px;">
+        Mevcut savaştan çıkmak üzeresiniz. İlerlemeniz kaybolacaktır. Emin misiniz?
+      </p>
+      <div style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
+        <button id="btn-confirm-cancel" class="btn-setup btn-secondary" style="padding: 10px 18px; font-size: 0.9rem;" type="button">
+          ⚔️ Savaşa Devam Et
+        </button>
+        <button id="btn-confirm-action" class="btn-setup" style="padding: 10px 18px; font-size: 0.9rem; background: var(--accent-hit); color: #fff; border-color: var(--accent-hit); box-shadow: 0 0 14px var(--accent-hit-glow);" type="button">
+          🏳️ Evet, Oyundan Çık
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- HOTSEAT PRIVACY CURTAIN OVERLAY -->
+  <div id="hotseat-curtain" class="modal-overlay hotseat-overlay" role="dialog" aria-modal="true" aria-labelledby="hotseat-title" style="display: none;">
+    <div class="modal-card hotseat-card">
+      <div class="hotseat-badge">🔒 GİZLİLİK PERDESİ</div>
+      <div class="hotseat-anim-radar">
+        <div class="radar-scan-line"></div>
+      </div>
+      <h2 id="hotseat-title" class="hotseat-title">CİHAZI 2. OYUNCUYA VERİN</h2>
+      <p id="hotseat-desc" class="hotseat-desc">Sıra Oyuncu 2'de. Rakibin gemi konumlarını görmemek için ekran karartıldı. Cihazı devredin ve hazır olduğunuzda butona basın.</p>
+      <button id="btn-hotseat-ready" class="btn-primary hotseat-action-btn" type="button">👁️ Sırayı Al & Devam Et</button>
+    </div>
+  </div>
+
   <!-- GAME OVER MODAL -->
-  <div id="game-over-modal" class="modal-overlay" style="display: none;">
+  <div id="game-over-modal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="modal-title" style="display: none;">
     <div class="modal-card">
       <h2 id="modal-title" style="font-size: 1.8rem; margin-bottom: 12px; color: var(--accent-cyan);">ZAFER!</h2>
       <p id="modal-desc" style="color: var(--text-muted); line-height: 1.5;">Düşman donanmasını başarıyla batırdınız.</p>
-      <button id="btn-restart" class="btn-primary">Tekrar Oyna</button>
+      <div style="display: flex; gap: 12px; margin-top: 20px; justify-content: center; flex-wrap: wrap;">
+        <button id="btn-restart" class="btn-primary" type="button">Tekrar Oyna</button>
+        <button id="btn-gameover-change-mode" class="btn-setup btn-secondary" type="button">🎮 Mod Değiştir</button>
+      </div>
     </div>
   </div>
 
